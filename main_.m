@@ -3,15 +3,16 @@ n=5;
 tic
 T=cheb(n);
 toc
-aantal_ev = 100;
+aantal_ev = 10000;
 X = linspace(-1,1,aantal_ev);
 figure()
 hold on
 for i=1:n+1
     plot(X,polyval(fliplr(T(i,:)),X))%Select the row in T, flip it to descending order and then evaluate in the given points X and plot.
 end
-ylim([-1 1]);
+ylim([-1 2]);
 title('Chebychev veeltermen')
+title(legend,'T_k')
 legend(cellstr(num2str([0:n]', 'T_%-d')))
 
 %% plotje van f_handle
