@@ -16,10 +16,9 @@ title(legend,'T_k')
 legend(cellstr(num2str([0:n]', 'T_%-d')))
 
 %% plotje van f_handle
-f_handle = @(x) exp(x);
-n = 5;
-a = real(chebcoeff(f_handle,n));
-a = a(1:round(length(a)/2)+1);
+f_handle = @(x) x.^2;
+n = 30;
+a = chebcoeff(f_handle,n);
 T = cheb(n);
 c = poly(a,T);
 

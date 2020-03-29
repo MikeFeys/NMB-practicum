@@ -1,3 +1,6 @@
+%input:
+%a-vector from zero to highest degree
+
 function [c] = poly(a, T)
 % controle valid input
 if size(T,1) - length(a) <0
