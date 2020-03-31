@@ -16,8 +16,8 @@ title(legend,'T_k')
 legend(cellstr(num2str([0:n]', 'T_%-d')))
 
 %% plotje van f_handle
-f_handle = @(x) x.^2;
-n = 30;
+f_handle = @(x) (x-1)/(1+6*x.^2);
+n =9;
 a = chebcoeff(f_handle,n);
 T = cheb(n);
 c = poly(a,T);
@@ -31,7 +31,10 @@ end
     %ylabel('Amplitude');
     %xlabel('Frequentie (Hz)')
 figure()
-plot(X,y)
+plot(X,y,'-.b','DisplayName','Benadering')
+hold on
+fplot(f_handle,[-1 1])
+legend()
 if n==1
     title(['Chebychev veeltermbenadering van: ', strrep(char(f_handle),'@(x)','') ,' tot op 1ste orde.'])
 else

@@ -2,7 +2,10 @@ function [a] = chebcoeff(f_handle,N)
 %evaluate op eenheidscirkel, punten van pi tot 2pi zijn identiek en dus
 %nutteloos (na cos(theta)) daarom van 0 tot pi
 evspace = cos(linspace(0,pi,N+1));
-monsters = f_handle(evspace);
+monsters=zeros(1,N+1);%Preallocate for speed
+for i=1:N+1 %Add for loop since can't immediately pass matrix to functionhandle.
+monsters(i) = f_handle(evspace(i));
+end
 
 %uitbreiding (antiklokwijs, starten op x=1)     
 monsters_eenheid_cirkel = [monsters,flip(monsters(2:end-1))];
