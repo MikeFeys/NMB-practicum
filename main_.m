@@ -17,26 +17,32 @@ legend(cellstr(num2str([0:n]', 'T_%-d')))
 
 %% plotje van f_handle
 f_handle = @(x) (x-1)/(1+6*x.^2);
-n =9;
-a = chebcoeff(f_handle,n);
-T = cheb(n);
-c = poly(a,T);
 
 aantal_ev = 100;
 X = linspace(-1,1,aantal_ev);
+figure()
+hold on
+fplot(f_handle,[-1 1])
+set(gca,'colororder',[0 0 1; 0 1 0],'linestyleorder',{'-','-.',':','--','-*',':s','--^'},'nextplot','add')
+for n =[2 4 6 8 12 16 20] %Aantal verschillende benaderingen plotten
+a = chebcoeff(f_handle,n);
+T = cheb(n);
+c = poly(a,T);
 y = zeros(1,aantal_ev);
 for i=1:n+1
     y = y + c(i)*(X.^(i-1));
 end
-    %ylabel('Amplitude');
-    %xlabel('Frequentie (Hz)')
-figure()
-plot(X,y,'-.b','DisplayName','Benadering')
+ if n==1
+    ordenaam=' ste orde' ;
+else 
+    ordenaam=' de orde' ;
+ end
+plot(X,y,'DisplayName',['Benadering van ',num2str(n),ordenaam])
 hold on
-fplot(f_handle,[-1 1])
 legend()
 if n==1
     title(['Chebychev veeltermbenadering van: ', strrep(char(f_handle),'@(x)','') ,' tot op 1ste orde.'])
 else
     title(['Chebychev veeltermbenadering van: ', strrep(char(f_handle),'@(x)','') ,' tot op ',num2str(n),'de orde.'])
+end
 end
