@@ -95,18 +95,18 @@ max_fout = zeros(1,max_ord);
 
 f_handle = @(x) (x-1)/(1+6*x.^2);
 
-aantal_ev = 100;
-X = linspace(-1,1,aantal_ev); 
+ 
 
 for n = 1:max_ord
     
 a = chebcoeff(f_handle,n);
 T = cheb(n);
 c = poly(a,T);
-y = zeros(1,aantal_ev);
+syms x;
+y(x) = 0;
 
 for i=1:n+1
-    y = y + c(i)*(X.^(i-1));
+    y = y + c(i)*(x.^(i-1));
 end
 
 max_fout(1,n) = fminbnd(-abs(f_handle-y),-2,0);
