@@ -64,7 +64,7 @@ figure()
 hold on
 fplot(f_handle,[-1 1])
 set(gca,'colororder',[0 0 1; 0 1 0],'linestyleorder',{'-','-.',':','--','-*',':s','--^'},'nextplot','add')
-for n =[1 2 4 6] %Aantal verschillende benaderingen plotten
+for n =[1 2 4 6 8] %Aantal verschillende benaderingen plotten
 a = chebcoeff(f_handle,n);
 T = cheb(n);
 c = poly(a,T);
@@ -91,7 +91,7 @@ end
 
 %% Convergentiesnelheid LUKAS
 
-max_ord = 100;
+max_ord = 50;
 max_fout = zeros(1,max_ord);
 f_handle = @(x) (x-1)/(1+6*x.^2);
 
@@ -107,11 +107,16 @@ for i=1:n+1
     y = y + c(i)*(x.^(i-1));
 end
 
-max_fout(n) = fminsearch(-abs(f_handle-y),0);
+[x_min,fval] = fminsearch(-abs(f_handle-y),0);
+if x_min>1 && x_min<-1
+    disp("ERROR: Minima is outside boundaries of [-1,1]");
+end
+max_fout(n) = -fval;
 
 end
 figure()
 plot(1:n,max_fout)
+plot(-1:100:1,abs(f_handle-y))
 
 %% BATS
 
@@ -134,7 +139,8 @@ y = poly2sym(fliplr(c));
 evspace = cos(linspace(0,pi,n+1));
 
 %for i=2:length(evspace)
-max_fout(n) = fminbnd( @(x)-abs(f_handle-y),-1,1);
+[~,fval] = fminbnd( @(x)-abs(f_handle-y),-1,1);
+max_fout(n) = -fval;
 %end
 end
 figure()
