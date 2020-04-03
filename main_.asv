@@ -64,7 +64,7 @@ figure()
 hold on
 fplot(f_handle,[-1 1])
 set(gca,'colororder',[0 0 1; 0 1 0],'linestyleorder',{'-','-.',':','--','-*',':s','--^'},'nextplot','add')
-for n =[1 2 4 6] %Aantal verschillende benaderingen plotten
+for n =[2 4 6] %Aantal verschillende benaderingen plotten
 a = chebcoeff(f_handle,n);
 T = cheb(n);
 c = poly(a,T);
@@ -90,27 +90,23 @@ end
 end
 
 %% Convergentiesnelheid
-sym x;
-f_handle =  (x-1)/(1+6*x.^2);
+f_handle = @(x) (x-1)/(1+6*x.^2);
 
 max_ord = 10;
 max_fout = zeros(1,max_ord);
 for n = 1:max_ord
     
-a = chebcoeff(@(x) (x-1)/(1+6*x.^2),n);
+a = chebcoeff(f_handle,n);
 T = cheb(n);
 c = poly(a,T);
 
 y = poly2sym(fliplr(c));
 
 %limatation of fminbnd is that it may be stuck in local minima so evaluate
-%max error per interval and seek maxiumum error of all the intervals
-evspace = cos(linspace(0,pi,n+1));
+%per interval and seek maxiumum in that row
 
-%for i=2:length(evspace)
-max_fout(n) = fminbnd( @(x)-abs(f_handle-y),-1,1);
-%end
-
+fo
+max_fout(1,n) = fminbnd( @(x)-abs(f_handle-y),-2,0);
 end
 figure()
 plot(1:n,max_fout)
