@@ -103,13 +103,13 @@ a = chebcoeff(f_handle,n);
 T = cheb(n);
 c = poly(a,T);
 syms x;
-y(x) = 0;
+y(x) = 0.*x;
 
 for i=1:n+1
     y = y + c(i)*(x.^(i-1));
 end
 
-max_fout(1,n) = fminbnd(-abs(f_handle-y),-2,0);
+max_fout(1,n) = fminbnd(abs(f_handle-y),0,1);
 end
 figure()
 plot(1:n,max_fout)
