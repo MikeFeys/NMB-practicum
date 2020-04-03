@@ -90,7 +90,7 @@ end
 end
 
 %% Convergentiesnelheid
-max_ord = 10;
+max_ord = 100;
 max_fout = zeros(1,max_ord);
 
 f_handle = @(x) (x-1)/(1+6*x.^2);
@@ -109,7 +109,7 @@ for i=1:n+1
     y = y + c(i)*(x.^(i-1));
 end
 
-max_fout(1,n) = fminbnd(abs(f_handle-y),0,1);
+max_fout(1,n) = max();
 end
 figure()
 plot(1:n,max_fout)
