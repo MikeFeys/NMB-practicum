@@ -56,7 +56,7 @@ title(legend,'T_k')
 legend(cellstr(num2str([0:n]', 'T_%-d')))
 
 %% plotje van f_handle
-f_handle = @(x) (x-1)/(1+6*x.^2);
+f_handle = @(x) (x-1)./(1+6.*x.^2);
 
 aantal_ev = 100;
 X = linspace(-1,1,aantal_ev);
@@ -91,14 +91,15 @@ end
 
 %% Convergentiesnelheid LUKAS
 
-max_ord = 50;
+max_ord = 25;
 max_fout = zeros(1,max_ord);
 minima = zeros(1,max_ord);
-f_handle = @(x) (x-1)/(1+6*x.^2);
+%f_handle = @(x) (x-1)/(1+6*x.^2);
+f_handle = @(x) log(x+2).*sin(10.*x);
 
 for n = 1:max_ord
     
-a = chebcoeff(@(x) (x-1)/(1+6*x.^2),n);
+a = chebcoeff(f_handle,n);
 T = cheb(n);
 c = poly(a,T);
 syms x;
@@ -109,19 +110,15 @@ for i=1:n+1
 end
 
 [x_min,fval] = fminsearch(-abs(f_handle-y),0);
-if x_min>1 && x_min<-1
+if x_min>1 || x_min<-1
     disp("ERROR: Minima is outside boundaries of [-1,1]");
 end
 max_fout(n) = -fval;
-
-if abs(xval)>1
-    disp('ERROR: minimum valt buiten interval')
-    return;
+%%fplot(abs(f_handle-y), [-1,1],'DisplayName',['Fout van orde',num2str(n)])
+%hold on
 end
-end
-figure()
-plot(1:n,max_fout)
-plot(-1:100:1,abs(f_handle-y))
+hold off
+plot(1:n,log(max_fout))
 
 %% BATS
 
@@ -150,9 +147,3 @@ max_fout(n) = -fval;
 end
 figure()
 plot(1:n,max_fout)
-
-
-
-
-
-
