@@ -89,15 +89,38 @@ end
 
 end
 
-%% Convergentiesnelheid
-<<<<<<< HEAD
+%% Convergentiesnelheid LUKAS
+
 max_ord = 100;
-=======
+max_fout = zeros(1,max_ord);
+f_handle = @(x) (x-1)/(1+6*x.^2);
+
+for n = 1:max_ord
+    
+a = chebcoeff(@(x) (x-1)/(1+6*x.^2),n);
+T = cheb(n);
+c = poly(a,T);
+syms x;
+y(x) = 0.*x;
+
+for i=1:n+1
+    y = y + c(i)*(x.^(i-1));
+end
+
+[~,fval] = fminsearch(-abs(f_handle-y),0.5);
+max_fout(1,n) = fval; 
+
+end
+figure()
+plot(1:n,max_fout)
+
+%% BATS
+
 sym x;
 f_handle =  (x-1)/(1+6*x.^2);
 
 max_ord = 10;
->>>>>>> master
+
 max_fout = zeros(1,max_ord);
 for n = 1:max_ord
     
@@ -114,22 +137,9 @@ evspace = cos(linspace(0,pi,n+1));
 %for i=2:length(evspace)
 max_fout(n) = fminbnd( @(x)-abs(f_handle-y),-1,1);
 %end
-
-<<<<<<< HEAD
-max_fout(1,n) = max();
-=======
->>>>>>> master
 end
 figure()
 plot(1:n,max_fout)
-
-
-
-sym x;
-f_handle =  (x-1)/(1+6*x.^2);
-
-max_ord = 10;
-
 
 
 

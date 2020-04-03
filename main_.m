@@ -91,8 +91,9 @@ end
 
 %% Convergentiesnelheid LUKAS
 
-max_ord = 100;
+max_ord = 50;
 max_fout = zeros(1,max_ord);
+minima = zeros(1,max_ord);
 f_handle = @(x) (x-1)/(1+6*x.^2);
 
 for n = 1:max_ord
@@ -107,8 +108,13 @@ for i=1:n+1
     y = y + c(i)*(x.^(i-1));
 end
 
-max_fout(n) = fminsearch(-abs(f_handle-y),0);
+[xval,fval] = fminsearch(-abs(f_handle-y),0);
+max_fout(1,n) = abs(fval); 
 
+if abs(xval)>1
+    disp('ERROR: minimum valt buiten interval')
+    return;
+end
 end
 figure()
 plot(1:n,max_fout)
