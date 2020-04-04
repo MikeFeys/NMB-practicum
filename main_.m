@@ -56,7 +56,10 @@ title(legend,'T_k')
 legend(cellstr(num2str([0:n]', 'T_%-d')))
 
 %% plotje van f_handle
-f_handle = @(x) (x-1)./(1+6.*x.^2);
+%f_handle = @(x) (x-1)/(1+6*x.^2);
+%f_handle = @(x) log(x+2)*sin(10*x);
+f_handle = @(x)x^5-x^4+x^3-x^2+x-1;
+
 
 aantal_ev = 100;
 X = linspace(-1,1,aantal_ev);
@@ -64,7 +67,7 @@ figure()
 hold on
 fplot(f_handle,[-1 1])
 set(gca,'colororder',[0 0 1; 0 1 0],'linestyleorder',{'-','-.',':','--','-*',':s','--^'},'nextplot','add')
-for n =[1 2 4 6 8] %Aantal verschillende benaderingen plotten
+for n =[ 1 2 5] %Aantal verschillende benaderingen plotten
 a = chebcoeff(f_handle,n);
 T = cheb(n);
 c = poly(a,T);
@@ -93,10 +96,11 @@ end
 
 max_ord = 25;
 max_fout = zeros(1,max_ord);
-minima = zeros(1,max_ord);
-%f_handle = @(x) (x-1)/(1+6*x.^2);
-f_handle = @(x) log(x+2).*sin(10.*x);
-
+f_handle = @(x) (x-1)/(1+6*x.^2);
+%f_handle = @(x) log(x+2)*sin(10*x);
+%f_handle = @(x)x^5-x^4+x^3-x^2+x-1;
+X = linspace(-1,1,100);
+figure()
 for n = 1:max_ord
     
 a = chebcoeff(f_handle,n);
@@ -110,40 +114,42 @@ for i=1:n+1
 end
 
 [x_min,fval] = fminsearch(-abs(f_handle-y),0);
-if x_min>1 || x_min<-1
-    disp("ERROR: Minima is outside boundaries of [-1,1]");
-end
+    if x_min>1 || x_min<-1
+        disp("ERROR: Minima is outside boundaries of [-1,1]");
+    end
 max_fout(n) = -fval;
-%%fplot(abs(f_handle-y), [-1,1],'DisplayName',['Fout van orde',num2str(n)])
 %hold on
+%fplot(abs(f_handle-y),[-1 1],'DisplayName',['Fout van orde ',num2str(n)])
 end
+%fplot(log(abs(f_handle-y)),[-1 1])
+%legend()
 hold off
-plot(1:n,log(max_fout))
+%figure()
+plot(1:n,max_fout)
 
 %% BATS
 
-sym x;
-f_handle =  (x-1)/(1+6*x.^2);
+f_handle =  @(x) (x-1)/(1+6*x.^2);
 
 max_ord = 10;
 
 max_fout = zeros(1,max_ord);
 for n = 1:max_ord
     
-a = chebcoeff(@(x) (x-1)/(1+6*x.^2),n);
+a = chebcoeff(f_handle,n);
 T = cheb(n);
 c = poly(a,T);
-
 y = poly2sym(fliplr(c));
 
 %limatation of fminbnd is that it may be stuck in local minima so evaluate
 %max error per interval and seek maxiumum error of all the intervals
-evspace = cos(linspace(0,pi,n+1));
-
-%for i=2:length(evspace)
-[~,fval] = fminbnd( @(x)-abs(f_handle-y),-1,1);
-max_fout(n) = -fval;
-%end
+evspace = fliplr(cos(linspace(0,pi,n+1)) );
+max_intval = zeros(0,length(evspace)-1); 
+for i=2:length(evspace)
+    [~,fval,~,~] = fminbnd( matlabFunction(-abs(f_handle-y)),evspace(i-1),evspace(i));
+    max_intval(i) = -fval;
+end
+max_fout(n) = max(max_intval);
 end
 figure()
 plot(1:n,max_fout)
