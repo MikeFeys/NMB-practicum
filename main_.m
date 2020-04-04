@@ -1,4 +1,6 @@
 %% 1.2.3 f(x) benaderen + convergentiesnelheid enzo
+clear
+tic
 syms x;
 f1(x) = (x-1)./(1+6.*x.^2);
 
@@ -15,30 +17,10 @@ for n=2:n_max
     
     %plot(X, abs((X-1)./(1+6.*X.^2)-polyval(fliplr(c),X)));
 end
-    plot(X, abs((X-1)./(1+6.*X.^2)-polyval(fliplr(c),X)));
-
-
-
-%%
-% plotten
-aantal_ev = 100;
-X = linspace(-1,1,aantal_ev);
-y = zeros(1,aantal_ev);
-for i=1:n+1
-    y = y + c(i)*(X.^(i-1));
-end
-    %ylabel('Amplitude');
-    %xlabel('Frequentie (Hz)')
-figure()
-plot(X,y)
-if n==1
-    title(['Chebychev veeltermbenadering van: ', strrep(char(f_handle),'@(x)','') ,' tot op 1ste orde.'])
-else
-    title(['Chebychev veeltermbenadering van: ', strrep(char(f_handle),'@(x)','') ,' tot op ',num2str(n),'de orde.'])
-end
-
-
+plot(X, abs((X-1)./(1+6.*X.^2)-polyval(fliplr(c),X)));
+toc
 %% plotting cheb
+clear
 n=5;
 tic
 T=cheb(n);
@@ -56,9 +38,11 @@ title(legend,'T_k')
 legend(cellstr(num2str([0:n]', 'T_%-d')))
 
 %% plotje van f_handle
-%f_handle = @(x) (x-1)/(1+6*x.^2);
-%f_handle = @(x) log(x+2)*sin(10*x);
-f_handle = @(x)x^5-x^4+x^3-x^2+x-1;
+clear
+tic
+f_handle = @(x) (x-1)./(1+6*x.^2);
+%f_handle = @(x) log(x+2).*sin(10*x);
+%f_handle = @(x) x.^5-x.^4+x.^3-x.^2+x-1;
 
 
 aantal_ev = 100;
@@ -67,7 +51,7 @@ figure()
 hold on
 fplot(f_handle,[-1 1])
 set(gca,'colororder',[0 0 1; 0 1 0],'linestyleorder',{'-','-.',':','--','-*',':s','--^'},'nextplot','add')
-for n =[ 1 2 5] %Aantal verschillende benaderingen plotten
+for n =[2 5 8 11 14 17 22] %Aantal verschillende benaderingen plotten
 a = chebcoeff(f_handle,n);
 T = cheb(n);
 c = poly(a,T);
@@ -75,31 +59,23 @@ y = zeros(1,aantal_ev);
 for i=1:n+1
     y = y + c(i)*(X.^(i-1));
 end
- if n==1
-    ordenaam=' ste orde' ;
-else 
-    ordenaam=' de orde' ;
- end
-plot(X,y,'DisplayName',['Benadering van ',num2str(n),ordenaam])
+plot(X,y,'DisplayName',['Benadering van ',num2str(n),' orde'])
 hold on
 legend()
-if n==1
-    title(['Chebychev veeltermbenadering van: ', strrep(char(f_handle),'@(x)','') ,' tot op 1ste orde.'])
-else
-    title(['Chebychev veeltermbenadering van: ', strrep(char(f_handle),'@(x)','') ,' tot op ',num2str(n),'de orde.'])
+title(['Chebychev veeltermbenadering van: ', strrep(char(f_handle),'@(x)','') ,' tot op ',num2str(n),' orde.'])
 end
-
-
-end
-
+toc
 %% Convergentiesnelheid LUKAS
-
+clear
+tic
+f_handle = @(x) (x-1)./(1+6*x.^2);
+%f_handle = @(x) log(x+2).*sin(10*x);
+%f_handle = @(x) x.^5-x.^4+x.^3-x.^2+x-1;
 max_ord = 25;
-max_fout = zeros(1,max_ord);
-f_handle = @(x) (x-1)/(1+6*x.^2);
-%f_handle = @(x) log(x+2)*sin(10*x);
-%f_handle = @(x)x^5-x^4+x^3-x^2+x-1;
+
 X = linspace(-1,1,100);
+max_fout = zeros(1,max_ord);
+
 figure()
 for n = 1:max_ord
     
@@ -126,14 +102,17 @@ end
 hold off
 %figure()
 plot(1:n,max_fout)
-
+toc
 %% BATS
-
-f_handle =  @(x) (x-1)/(1+6*x.^2);
-
+clear
+tic
+f_handle = @(x) (x-1)./(1+6*x.^2);
+%f_handle = @(x) log(x+2).*sin(10*x);
+%f_handle = @(x) x.^5-x.^4+x.^3-x.^2+x-1;
 max_ord = 10;
 
 max_fout = zeros(1,max_ord);
+
 for n = 1:max_ord
     
 a = chebcoeff(f_handle,n);
@@ -153,3 +132,38 @@ max_fout(n) = max(max_intval);
 end
 figure()
 plot(1:n,max_fout)
+toc
+%%
+%Gemiddelde fout convergentie (mike)
+clear
+tic
+f_handle = @(x) (x-1)./(1+6*x.^2);
+%f_handle = @(x) log(x+2).*sin(10*x);
+%f_handle = @(x) x.^5-x.^4+x.^3-x.^2+x-1;
+
+max_orde=25;%Maximum chebyshev orde benadering
+aantal_ev = 100;%Aantal interpolatiepunten
+
+X = linspace(-1,1,aantal_ev);%Gelijk verdeelde interpolatiepunten maken
+Gemiddeldefout=zeros(1,max_orde);%Preallocate voor snelheid
+Functiewaarden=arrayfun(f_handle,X);%Alle functiewaarden van de effectieve functie over de interpolatiepunten
+
+for n =1:max_orde 
+a = chebcoeff(f_handle,n);
+T = cheb(n);
+c = poly(a,T);
+y = zeros(1,aantal_ev);
+
+for i=1:n+1
+    y = y + c(i)*(X.^(i-1));
+end
+Gemiddeldefout(n)=sum(abs(Functiewaarden-y))/aantal_ev;%Som van de absolute waarden van het verschil van effectieve waarde en benaderingswaarde gedeeld door het aantal interpolatiepunten 
+end
+Y=log(Gemiddeldefout);
+plot(1:max_orde,Y,'HandleVisibility','off')
+hold on
+plot(1:max_orde,Y,'b*')
+xlabel('Orde')
+ylabel('log(gemiddelde fout)')
+legend('gemiddelde fout per orde')
+toc
