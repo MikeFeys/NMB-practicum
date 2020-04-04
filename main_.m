@@ -75,13 +75,12 @@ max_ord = 25;
 
 X = linspace(-1,1,100);
 max_fout = zeros(1,max_ord);
-
+T = cheb(max_ord);
 figure()
 for n = 1:max_ord
     
 a = chebcoeff(f_handle,n);
-T = cheb(n);
-c = poly(a,T);
+c = poly(a,T(1:n+1,1:n+1));
 syms x;
 y(x) = 0.*x;
 
@@ -112,12 +111,11 @@ f_handle = @(x) (x-1)./(1+6*x.^2);
 max_ord = 10;
 
 max_fout = zeros(1,max_ord);
-
+T = cheb(max_ord);
 for n = 1:max_ord
     
 a = chebcoeff(f_handle,n);
-T = cheb(n);
-c = poly(a,T);
+c = poly(a,T(1:n+1,1:n+1));
 y = poly2sym(fliplr(c));
 
 %limatation of fminbnd is that it may be stuck in local minima so evaluate
@@ -141,28 +139,29 @@ f_handle = @(x) (x-1)./(1+6*x.^2);
 %f_handle = @(x) log(x+2).*sin(10*x);
 %f_handle = @(x) x.^5-x.^4+x.^3-x.^2+x-1;
 
-max_orde=25;%Maximum chebyshev orde benadering
+max_orde=65;%Maximum chebyshev orde benadering
 aantal_ev = 100;%Aantal interpolatiepunten
 
 X = linspace(-1,1,aantal_ev);%Gelijk verdeelde interpolatiepunten maken
-Gemiddeldefout=zeros(1,max_orde);%Preallocate voor snelheid
+Gemiddeldefoutlog=zeros(1,max_orde);%Preallocate voor snelheid
 Functiewaarden=arrayfun(f_handle,X);%Alle functiewaarden van de effectieve functie over de interpolatiepunten
+T = cheb(max_orde);%Geeft alle veeltermen in matrix tot max_orde dus kan op voorhand al berekend worden en dan slechts opvragen
 
 for n =1:max_orde 
 a = chebcoeff(f_handle,n);
-T = cheb(n);
-c = poly(a,T);
+c = poly(a,T(1:n+1,1:n+1));
 y = zeros(1,aantal_ev);
 
 for i=1:n+1
     y = y + c(i)*(X.^(i-1));
 end
-Gemiddeldefout(n)=sum(abs(Functiewaarden-y))/aantal_ev;%Som van de absolute waarden van het verschil van effectieve waarde en benaderingswaarde gedeeld door het aantal interpolatiepunten 
+%Ik neem aan dat sum al alles ordend en klein naar groot de som neemt om de
+%kleineste fout te krijgen
+Gemiddeldefoutlog(n)=log(sum(abs(Functiewaarden-y))/aantal_ev);%Log van de som van de absolute waarden van het verschil van effectieve waarde en benaderingswaarde gedeeld door het aantal interpolatiepunten 
 end
-Y=log(Gemiddeldefout);
-plot(1:max_orde,Y,'HandleVisibility','off')
+plot(1:max_orde,Gemiddeldefoutlog,'HandleVisibility','off')
 hold on
-plot(1:max_orde,Y,'b*')
+plot(1:max_orde,Gemiddeldefoutlog,'b*')
 xlabel('Orde')
 ylabel('log(gemiddelde fout)')
 legend('gemiddelde fout per orde')
