@@ -18,32 +18,33 @@ for n=2:n_max
     %plot(X, abs((X-1)./(1+6.*X.^2)-polyval(fliplr(c),X)));
 end
 plot(X, abs((X-1)./(1+6.*X.^2)-polyval(fliplr(c),X)));
-toc
+TijdTerInfoInSeconden=toc
 %% plotting cheb
 clear
-n=5;
+
 tic
-T=cheb(n);
-toc
-aantal_ev = 10000;
+n=4;
+aantal_ev = 100;
+
+T=cheb(n)
 X = linspace(-1,1,aantal_ev);
 figure()
 hold on
+set(gca,'colororder',[0 0 1; 0 1 0],'linestyleorder',{'-','-.',':','--','-*',':s','--^'},'nextplot','add')
 for i=1:n+1
     plot(X,polyval(fliplr(T(i,:)),X))%Select the row in T, flip it to descending order and then evaluate in the given points X and plot.
 end
 ylim([-1 2]);
-title('Chebychev veeltermen')
+title(['Chebyshev veeltermen tot ',num2str(n) , ' orde'])
 title(legend,'T_k')
 legend(cellstr(num2str([0:n]', 'T_%-d')))
-
+TijdTerInfoInSeconden=toc
 %% plotje van f_handle
 clear
 tic
-f_handle = @(x) (x-1)./(1+6*x.^2);
+%f_handle = @(x) (x-1)./(1+6*x.^2);
 %f_handle = @(x) log(x+2).*sin(10*x);
-%f_handle = @(x) x.^5-x.^4+x.^3-x.^2+x-1;
-
+f_handle = @(x) x.^5-x.^4+x.^3-x.^2+x-1;
 
 aantal_ev = 100;
 X = linspace(-1,1,aantal_ev);
@@ -51,7 +52,7 @@ figure()
 hold on
 fplot(f_handle,[-1 1])
 set(gca,'colororder',[0 0 1; 0 1 0],'linestyleorder',{'-','-.',':','--','-*',':s','--^'},'nextplot','add')
-for n =[2 5 8 11 14 17 22] %Aantal verschillende benaderingen plotten
+for n =[2 4 9 11 30] %Aantal verschillende benaderingen plotten
 a = chebcoeff(f_handle,n);
 T = cheb(n);
 c = poly(a,T);
@@ -64,14 +65,14 @@ hold on
 legend()
 title(['Chebychev veeltermbenadering van: ', strrep(char(f_handle),'@(x)','') ,' tot op ',num2str(n),' orde.'])
 end
-toc
+TijdTerInfoInSeconden=toc
 %% Convergentiesnelheid LUKAS
 clear
 tic
 f_handle = @(x) (x-1)./(1+6*x.^2);
 %f_handle = @(x) log(x+2).*sin(10*x);
 %f_handle = @(x) x.^5-x.^4+x.^3-x.^2+x-1;
-max_ord = 25;
+max_ord = 60;
 
 X = linspace(-1,1,100);
 max_fout = zeros(1,max_ord);
@@ -101,14 +102,14 @@ end
 hold off
 %figure()
 plot(1:n,max_fout)
-toc
+TijdTerInfoInSeconden=toc
 %% BATS
 clear
 tic
 f_handle = @(x) (x-1)./(1+6*x.^2);
 %f_handle = @(x) log(x+2).*sin(10*x);
 %f_handle = @(x) x.^5-x.^4+x.^3-x.^2+x-1;
-max_ord = 10;
+max_ord = 60;
 
 max_fout = zeros(1,max_ord);
 T = cheb(max_ord);
@@ -130,14 +131,15 @@ max_fout(n) = max(max_intval);
 end
 figure()
 plot(1:n,max_fout)
-toc
+
+TijdTerInfoInSeconden=toc
 %%
 %Gemiddelde fout convergentie (mike)
 clear
 tic
-f_handle = @(x) (x-1)./(1+6*x.^2);
+%f_handle = @(x) (x-1)./(1+6*x.^2);
 %f_handle = @(x) log(x+2).*sin(10*x);
-%f_handle = @(x) x.^5-x.^4+x.^3-x.^2+x-1;
+f_handle = @(x) x.^5-x.^4+x.^3-x.^2+x-1;
 
 max_orde=65;%Maximum chebyshev orde benadering
 aantal_ev = 100;%Aantal interpolatiepunten
@@ -157,7 +159,7 @@ for i=1:n+1
 end
 %Ik neem aan dat sum al alles ordend en klein naar groot de som neemt om de
 %kleineste fout te krijgen
-Gemiddeldefoutlog(n)=log(sum(abs(Functiewaarden-y))/aantal_ev);%Log van de som van de absolute waarden van het verschil van effectieve waarde en benaderingswaarde gedeeld door het aantal interpolatiepunten 
+Gemiddeldefoutlog(n)=log10(sum(abs(Functiewaarden-y))/aantal_ev);%Log van de som van de absolute waarden van het verschil van effectieve waarde en benaderingswaarde gedeeld door het aantal interpolatiepunten 
 end
 plot(1:max_orde,Gemiddeldefoutlog,'HandleVisibility','off')
 hold on
@@ -165,4 +167,5 @@ plot(1:max_orde,Gemiddeldefoutlog,'b*')
 xlabel('Orde')
 ylabel('log(gemiddelde fout)')
 legend('gemiddelde fout per orde')
-toc
+title(['Convergentie van ', strrep(char(f_handle),'@(x)','')])
+TijdTerInfoInSeconden=toc
