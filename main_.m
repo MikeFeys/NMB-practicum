@@ -183,12 +183,22 @@ y=linspace(-1,1,N);
 
 [X,Y]=meshgrid(x,y);
 f=f_handle(X,Y);
+figure()
 surf(X,Y,f)
 xlabel('X')
 ylabel('Y')
 title('Werkelijke 3D plot van sin((2x-1)^2+2y)')
 F=reshape(f,[M,N]);
 CoefMatrix=kkb2d(x, y, F, m, n);
+z=polyval2(CoefMatrix,x,y);%Calculate approximation
+figure()
+surf(X,Y,z,'HandleVisibility','off')
+hold on
+scatter3(reshape(X,[1,M*N]),reshape(Y,[1,M*N]),reshape(z,[1,M*N]),'filled','black')
+xlabel('X')
+ylabel('Y')
+legend('Datapunten')
+title(['Benaderende 3D plot van sin((2x-1)^2+2y) tot op graad m=',num2str(m),' en n=',num2str(n)])
 TijdTerInfoInSeconden=toc
 
 

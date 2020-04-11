@@ -173,6 +173,8 @@ TijdTerInfoInSeconden=toc
 %nuttige Matlab-functies zijn meshgrid; polyval2; scatter3 en surf
 clear
 tic
+m=7;
+n=7;
 M=31;
 N=31;
 f_handle= @(x1,y1) sin((2*x1-1).^2+2*y1);
@@ -182,9 +184,13 @@ y=linspace(-1,1,N);
 [X,Y]=meshgrid(x,y);
 f=f_handle(X,Y);
 surf(X,Y,f)
-title(['3D plot van ', char(sin((2*x-1)^2+2y))])
+xlabel('X')
+ylabel('Y')
+title('Werkelijke 3D plot van sin((2x-1)^2+2y)')
 F=reshape(f,[M,N]);
+CoefMatrix=kkb2d(x, y, F, m, n);
+%scatter3(X,Y,Z) displays circles at the locations specified by the vectors X, Y, and Z
 TijdTerInfoInSeconden=toc
-%of meshgrid ofzo boeie
+
 
 
