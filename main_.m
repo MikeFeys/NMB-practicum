@@ -189,6 +189,7 @@ xlabel('X')
 ylabel('Y')
 title('Werkelijke 3D plot van sin((2x-1)^2+2y)')
 F=reshape(f,[M,N]);
+%a
 CoefMatrix=kkb2d(x, y, F, m, n);
 z=polyval2(CoefMatrix,x,y);%Calculate approximation
 figure()
@@ -199,7 +200,52 @@ xlabel('X')
 ylabel('Y')
 legend('Datapunten')
 title(['Benaderende 3D plot van sin((2x-1)^2+2y) tot op graad m=',num2str(m),' en n=',num2str(n)])
+%b
+figure()
+surf(X,Y,membrane(1))
+xlabel('X')
+ylabel('Y')
+title('Werkelijke 3D plot van membrane(1)')
+CoefMatrix=kkb2d(x, y, membrane(1), m, n);
+z=polyval2(CoefMatrix,x,y);%Calculate approximation
+figure()
+surf(X,Y,z,'HandleVisibility','off')
+hold on
+scatter3(reshape(X,[1,M*N]),reshape(Y,[1,M*N]),reshape(z,[1,M*N]),'filled','black')
+xlabel('X')
+ylabel('Y')
+legend('Datapunten')
+title(['Benaderende 3D plot van functie membrane(1) tot op graad m=',num2str(m),' en n=',num2str(n)])
+%b
 TijdTerInfoInSeconden=toc
+%% Benaderingsfout plotten
+clear
+tic
+M=31;
+N=31;
+f_handle= @(x1,y1) sin((2*x1-1).^2+2*y1);
 
+x=linspace(-1,1,M);
+y=linspace(-1,1,N);
 
+[X,Y]=meshgrid(x,y);
+f=f_handle(X,Y);
+F=reshape(f,[M,N]);
+Foutenlijst=zeros(2,20);
+for m=1:20
+n=m;
+CoefMatrix1=kkb2d(x, y, F, m, n);
+CoefMatrix2=kkb2d(x, y, membrane(1), m, n);
 
+z1=polyval2(CoefMatrix1,x,y);
+z2=polyval2(CoefMatrix2,x,y);
+
+Foutenlijst(1,m)=norm(F-z1);
+Foutenlijst(2,m)=norm(F-z2);
+end
+plot(1:20,Foutenlijst(1,:))
+hold on
+plot(1:20,Foutenlijst(2,:))
+legend('Benaderingsfout van sin((2x-1)^2+2y)','Benaderingsfout van de functie membrane(1)')
+title('Plot van de benaderingsfouten tot op orde m=20 en n=20')
+TijdTerInfoInSeconden=toc
