@@ -2,8 +2,6 @@ function [C] = kkb2d(x, y, F, m, n)
 %Berekend de coefficientenmatrix c
 %x = [x1...xM] en y = [y1...yN], cartesisch product geeft puntenrooster
 % F matrix en m,n veeltermgraden
-syms x2
-tic
 M=length(x);
 N=length(y);
 A=zeros(M,m+1);%Preallocate for speed
