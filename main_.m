@@ -302,3 +302,35 @@ xlabel('X')
 ylabel('Y')
 legend('Datapunten')
 title(['Benaderende 3D plot van functie van Runge tot op graad m=',num2str(m),' en n=',num2str(n),' met niet-equidistante verdeling'])
+TijdTerInfoInSeconden=toc
+%% Etna
+clear
+tic
+M=435;
+N=484;
+F=double(imread('etna.jpg'));
+x=linspace(-1,1,M);
+y=linspace(-1,1,N);
+[X,Y]=meshgrid(x,y);
+surf(X,Y,transpose(F),'EdgeColor','none','LineStyle','none');
+xlim([-1,1]);
+ylim([-1,1]);
+zlim([0,250]);
+title('Etna');
+figure()
+imagesc(F)
+title('Bovenaanzicht Etna');
+m=25;
+n=25;
+
+CoefMatrix=kkb2d(x, y, F, m, n);
+z=polyval2(CoefMatrix,x,y);%Calculate approximation
+figure()
+surf(X,Y,z,'EdgeColor','none','LineStyle','none')
+xlabel('X')
+ylabel('Y')
+title(['Benaderende 3D plot van Etna tot op graad m=',num2str(m),' en n=',num2str(n)])
+figure()
+imagesc(z)
+title(['Benadering bovenaanzicht Etna tot op graad m=',num2str(m),' en n=',num2str(n)])
+TijdTerInfoInSeconden=toc

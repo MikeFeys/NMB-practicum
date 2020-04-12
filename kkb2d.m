@@ -6,7 +6,7 @@ M=length(x);
 N=length(y);
 A=zeros(M,m+1);%Preallocate for speed
 B=zeros(N,n+1);%Preallocate for speed
-if m == n
+if m == n && M==N
         for i=1:M %For loop adds row per row to matrix A with xi values calculated
             for j=0:m
                 A(i,j+1)=x(i)^j;
@@ -25,7 +25,6 @@ else
         end
     end
 end
-
 C=pinv(A)*F*transpose(pinv(B)); %pinv() gives pseudoinverse of matrix
 %Still have to do some shitty tests
 end
