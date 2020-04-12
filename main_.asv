@@ -254,51 +254,8 @@ clear
 tic
 M=30;
 N=30;
-m=7;% This needs to be 7??
-n=7;
-f_handle= @(x1,y1) 1./(1+25*x1.^2+25*y1.^2);
+f_handle= @(x1,y1) 1/(1+25*x1.^2+25*y1.^2);
 
 x=linspace(-1,1,M);
-y=x;
+y=linspace(-1,1,N);
 
-[X,Y]=meshgrid(x,y);
-f=f_handle(X,Y);
-figure()
-surf(X,Y,f)
-xlabel('X')
-ylabel('Y')
-title('Werkelijke 3D plot van functie van Runge met equidistante verdeling')
-F=reshape(f,[M,N]);
-%a
-CoefMatrix=kkb2d(x, y, F, m, n);
-z=polyval2(CoefMatrix,x,y);%Calculate approximation
-figure()
-surf(X,Y,z,'HandleVisibility','off')
-hold on
-scatter3(reshape(X,[1,M*N]),reshape(Y,[1,M*N]),reshape(z,[1,M*N]),'filled','black')
-xlabel('X')
-ylabel('Y')
-legend('Datapunten')
-title(['Benaderende 3D plot van functie van Runge tot op graad m=',num2str(m),' en n=',num2str(n),' met equidistante verdeling'])
-
-x=[linspace(-1,-0.20, 5), linspace(-0.18, 0.18, 20), linspace(0.20, 1, 5)];
-y=x;
-[X,Y]=meshgrid(x,y);
-f=f_handle(X,Y);
-figure()
-surf(X,Y,f)
-xlabel('X')
-ylabel('Y')
-title('Werkelijke 3D plot van functie van Runge met niet-equidistante verdeling')
-F=reshape(f,[M,N]);
-%a
-CoefMatrix=kkb2d(x, y, F, m, n);
-z=polyval2(CoefMatrix,x,y);%Calculate approximation
-figure()
-surf(X,Y,z,'HandleVisibility','off')
-hold on
-scatter3(reshape(X,[1,M*N]),reshape(Y,[1,M*N]),reshape(z,[1,M*N]),'filled','black')
-xlabel('X')
-ylabel('Y')
-legend('Datapunten')
-title(['Benaderende 3D plot van functie van Runge tot op graad m=',num2str(m),' en n=',num2str(n),' met niet-equidistante verdeling'])
