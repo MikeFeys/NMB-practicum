@@ -3,14 +3,12 @@ function [c] = poly(a, T)
 % Input:
 %   a:vector met coefficienten behorende bij stijgende graad van lengte k.
 %   T:matrix met coefficienten van Chebyshev-veeltermen van graad nul tot n
-
 %Controleren of de input geldig is
 if size(T,1) - length(a) <0
     disp('ERROR: niet genoeg cheb veeltermen voor de a-vector')
     return;
 end
-
-%a aanpassen zodat de lengte klopt.
+%a is vect with k values
 a = [a, zeros(1, size(T,1) - length(a))];
 
 %Preallocate voor snelheid.
@@ -21,6 +19,6 @@ for i =1:size(a,2)
    MatrixWaarden(i,:)=a(i)*T(i,:);
 end
 %Som alle kolommen om de correcte yn coefficienten te krijgen in stijgende graad.
-%Aanname dat sum de som neemt van klein naar groot om de minste fout te krijgen.
-c=sum(MatrixWaarden,1);
+%A
+c=sum(MatrixWaarden,1);%Sum all columns to get the correct yn values. Coef in ascending order of X
 end

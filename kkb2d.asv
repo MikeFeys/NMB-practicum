@@ -1,0 +1,37 @@
+function [C] = kkb2d(x, y, F, m, n) 
+%Geeft de coefficientenmatrix C terug
+% Input:
+% x = [x1...xM] en y = [y1...yN] waarvan cartesisch product puntenrooster geeft
+% F matrix en m,n veeltermgraden
+
+M=length(x);
+N=length(y);
+%Preallocate voor snelheid
+A=zeros(M,m+1);
+B=zeros(N,n+1);
+
+%Het if statement zorgt voor een snellere berekening indien input waarden gelijk
+%zijn.
+if m == n && M==N
+    %For loop adds row per row to matrix A with xi values calculated
+        for i=1:M 
+            for j=0:m
+                A(i,j+1)=x(i)^j;
+                B(i,j+1)=y(i)^j;
+            end
+        end
+else
+    for i=1:M %For loop adds row per row to matrix A with xi values calculated
+        for j=0:m
+            A(i,j+1)=x(i)^j;
+        end
+    end
+    for i=1:N %For loop adds row per row to matrix B with yi values calculated
+        for j=0:n
+            B(i,j+1)=y(i)^j;
+        end
+    end
+end
+C=pinv(A)*F*transpose(pinv(B)); %pinv() gives pseudoinverse of matrix
+%Still have to do some shitty tests
+end
