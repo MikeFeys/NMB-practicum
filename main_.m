@@ -312,13 +312,15 @@ F=double(imread('etna.jpg'));
 x=linspace(-1,1,M);
 y=linspace(-1,1,N);
 [X,Y]=meshgrid(x,y);
-surf(X,Y,transpose(F),'EdgeColor','none','LineStyle','none');
+surf(X,Y,transpose(F),'FaceLighting','gouraud','EdgeColor','none','LineStyle','none');%The 'phong' value has been removed. Use 'gouraud' instead.
+colorbar
 xlim([-1,1]);
 ylim([-1,1]);
 zlim([0,250]);
 title('Etna');
 figure()
 imagesc(F)
+colorbar
 title('Bovenaanzicht Etna');
 m=25;
 n=25;
@@ -326,11 +328,13 @@ n=25;
 CoefMatrix=kkb2d(x, y, F, m, n);
 z=polyval2(CoefMatrix,x,y);%Calculate approximation
 figure()
-surf(X,Y,z,'EdgeColor','none','LineStyle','none')
+surf(X,Y,z,'FaceLighting','gouraud','EdgeColor','none','LineStyle','none')%The 'phong' value has been removed. Use 'gouraud' instead.
+colorbar
 xlabel('X')
 ylabel('Y')
 title(['Benaderende 3D plot van Etna tot op graad m=',num2str(m),' en n=',num2str(n)])
 figure()
 imagesc(z)
+colorbar
 title(['Benadering bovenaanzicht Etna tot op graad m=',num2str(m),' en n=',num2str(n)])
 TijdTerInfoInSeconden=toc
