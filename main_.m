@@ -226,18 +226,16 @@ end
 %Puntenrooster maken
 [X,Y]=meshgrid(x,y);
 %Functiewaarden van gegeven functie op puntenrooster.
-f=f_handle(X,Y);
+F=f_handle(X,Y);
 
 %Plot.
 figure()
-surf(X,Y,f)
+surf(X,Y,F)
 xlabel('X')
 ylabel('Y')
 title('Werkelijke 3D plot van sin((2x-1)^2+2y)')
 
 %Voor f(x,y)=sin((2*x-1)^2+2y)
-    %f= vec(F), F uit f halen.
-    F=reshape(f,[M,N]);
     
     %Waarden opvragen.
     CoefMatrix=kkb2d(x, y, F, m, n);
@@ -293,9 +291,7 @@ y=linspace(-1,1,N);
 %Puntenrooster maken.
 [X,Y]=meshgrid(x,y);
 %Functiewaarden van gegeven functie op puntenrooster.
-f=f_handle(X,Y);
-%f= vec(F), F uit f halen.
-F=reshape(f,[M,N]);
+F=f_handle(X,Y);
 %Preallocate voor snelheid.
 Foutenlijst=zeros(2,20);
 
@@ -341,19 +337,17 @@ y=x;
 %Puntenrooster maken.
 [X,Y]=meshgrid(x,y);
 %Functiewaarden van gegeven functie op puntenrooster.
-f=f_handle(X,Y);
+F=f_handle(X,Y);
 
 %Plot.
 figure()
-surf(X,Y,f)
+surf(X,Y,F)
 xlabel('X')
 ylabel('Y')
 title('Werkelijke 3D plot van functie van Runge met equidistante verdeling')
 
 %Equidistante verdeling
 
-    %f= vec(F), F uit f halen.
-    F=reshape(f,[M,N]);
     %Waarden opvragen.
     CoefMatrix=kkb2d(x, y, F, m, n);
     z=polyval2(CoefMatrix,x,y);%Approximatie
@@ -378,15 +372,14 @@ title('Werkelijke 3D plot van functie van Runge met equidistante verdeling')
     %Puntenrooster maken.
     [X,Y]=meshgrid(x,y);
     %Functiewaarden van gegeven functie op puntenrooster.
-    f=f_handle(X,Y);
+    F=f_handle(X,Y);
     
     %Plot.
     figure()
-    surf(X,Y,f)
+    surf(X,Y,F)
     xlabel('X')
     ylabel('Y')
     title('Werkelijke 3D plot van functie van Runge met niet-equidistante verdeling')
-    F=reshape(f,[M,N]);
     
     %Waarden opvragen.
     CoefMatrix=kkb2d(x, y, F, m, n);
