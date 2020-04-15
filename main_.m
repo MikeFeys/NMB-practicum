@@ -120,10 +120,10 @@ disp(['Het uitvoeren van alle code duurde: ', num2str(TijdTerInfoInSeconden),' s
 %% BATS
 clear
 tic
-f_handle = @(x) (x-1)./(1+6*x.^2);
-%f_handle = @(x) log(x+2).*sin(10*x);
+%f_handle = @(x) (x-1)./(1+6*x.^2);
+f_handle = @(x) log(x+2).*sin(10*x);
 %f_handle = @(x) x.^5-x.^4+x.^3-x.^2+x-1;
-max_ord = 60;
+max_ord = 100;
 
 max_fout = zeros(1,max_ord);
 T = cheb(max_ord);
@@ -143,8 +143,13 @@ for i=2:length(evspace)
 end
 max_fout(n) = max(max_intval);
 end
-figure()
-plot(1:n,max_fout)
+plot(1:n,log10(max_fout),'HandleVisibility','off')
+hold on
+plot(1:max_ord,log10(max_fout),'b*')
+xlabel('Orde')
+ylabel('log(maximale fout)')
+legend('maximale fout per orde')
+title(['Convergentie van ', strrep(char(f_handle),'@(x)','')])
 
 %Ter info de tijd die de berekening nam.  
 TijdTerInfoInSeconden=toc;
