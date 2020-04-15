@@ -317,6 +317,8 @@ end
 plot(1:20,Foutenlijst(1,:))
 hold on
 plot(1:20,Foutenlijst(2,:))
+xlabel('Graad van benadering')
+ylabel('Norm van de benaderingsfout')
 legend('Benaderingsfout van sin((2x-1)^2+2y)','Benaderingsfout van de functie membrane(1)')
 title('Plot van de benaderingsfouten tot op orde m=20 en n=20')
 
