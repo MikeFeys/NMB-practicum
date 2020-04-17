@@ -34,12 +34,12 @@ clear
 tic
 %Invoeren parameters.
 aantal_ev = 100;
-LijstBenaderingsOrdes=[2 4 9 11 30];
+LijstBenaderingsOrdes=[2 4 6];
 
 %Afhankelijk van welke functie de rest in commentaar zetten.
-%f_handle = @(x) (x-1)./(1+6*x.^2);
+f_handle = @(x) (x-1)./(1+6*x.^2);
 %f_handle = @(x) log(x+2).*sin(10*x);
-f_handle = @(x) x.^5-x.^4+x.^3-x.^2+x-1;
+%f_handle = @(x) x.^5-x.^4+x.^3-x.^2+x-1;
 
 %Interpolatiepunten bepalen.
 X = linspace(-1,1,aantal_ev);
@@ -155,6 +155,22 @@ title(['Convergentie van ', strrep(char(f_handle),'@(x)','')])
 TijdTerInfoInSeconden=toc;
 disp(['Het uitvoeren van alle code duurde: ', num2str(TijdTerInfoInSeconden),' seconden.'])
 %% Convergentie via gemiddelde fout (Mike)
+
+%% da power of fminbnd met evspace in plot
+hold on
+plot(evspace,zeros(1,length(evspace)), 'o')
+fplot(abs(f_handle-y),[-1,1]);
+%%
+n = 25;
+f_handle = @(x) log(x+2)*sin(10*x);
+a = chebcoeff(f_handle,n);
+T = cheb(n);
+c = poly(a,T);
+y = poly2sym(fliplr(c));
+
+TijdTerInfoInSeconden=toc
+%%
+%Gemiddelde fout convergentie (mike)
 clear
 tic
 
