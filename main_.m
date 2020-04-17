@@ -449,11 +449,15 @@ surf(X,Y,z,'FaceLighting','gouraud','EdgeColor','none','LineStyle','none')%The '
 colorbar
 xlabel('X')
 ylabel('Y')
-title(['Benaderende 3D plot van Etna tot op graad m=',num2str(m),' en n=',num2str(n)])
+title(['Benaderende 3D plot van Etna tot op graad m=',num2str(m),' en n=',num2str(n)]) 
+
+
 figure()
 imagesc(z)
 colorbar
 title(['Benadering bovenaanzicht Etna tot op graad m=',num2str(m),' en n=',num2str(n)])
+
+
 
 %Ter info de tijd die de berekening nam.  
 TijdTerInfoInSeconden=toc;
