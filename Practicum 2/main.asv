@@ -77,11 +77,11 @@ legend('Residuwaarden')
 
 %Maak een tabel met logwaarden van de verschillende methodes.
 LogTabel=[1:677;log10(gemiddeldeResiduQRZonder);log10(gemiddeldeResiduQRRayleigh) NaN(1,677-83);log10(gemiddeldeResiduQRWilkinson) NaN(1,677-65)]';
+LogTabel(1:5,:);
+LogTabel(63:66,:);
 
-%Change the table to latex format for easy use. Only useful parts are
-%selected from table.
-latex_table = latex(vpa(sym([LogTabel(1:5,:); LogTabel(63:66,:); LogTabel(80:84,:); LogTabel(674:677,:)]),2));
-disp(['Latex formaat van de nuttige delen van de tabel: ',latex_table])
+%Change the table to latex format for easy use.
+latex_table = latex(vpa(sym(LogTabel),2))
 
 TijdTerInfoInSeconden= toc;
 disp(['De tijd die de berekening nam was: ',num2str(TijdTerInfoInSeconden),' seconden.'])
