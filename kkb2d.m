@@ -41,4 +41,5 @@ else
 end
 %Coefficientenmatrix berekenen.
 C=pinv(A)*F*transpose(pinv(B));
+disp(['Relatieve fout op coefficiëntenmatrix is ',num2str(100*norm(A*C*transpose(B)-F)/norm(C)),'%'])
 end
