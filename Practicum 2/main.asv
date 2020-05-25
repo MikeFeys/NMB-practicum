@@ -38,24 +38,22 @@ VolSymmetrischeMatrix=load('matrix.txt');
 [EigenwaardeQRWilkinson,ResiduQRWilkinson]=qr_shiftwilkinsonall(VolSymmetrischeMatrix);
 [EigenwaardeQRRayleigh,ResiduQRRayleigh]=qr_shiftall(VolSymmetrischeMatrix);
 
-%Kiezen welke eigenwaarde
-eigw=1;
-
+%Kieze
 %Convergentie voor 1 eigenwaarde plotten met elke methode apart.
 figure()
-plot(1:677,log10(ResiduQRZonder(eigw,:)),':gs','MarkerSize',2)
+plot(1:677,log10(ResiduQRZonder(1,:)),'b*','MarkerSize',1)
 title('QR-methode zonder shift')
 xlabel('Stappen')
 ylabel('Log residu')
 legend('Log residuwaarden van 1 eigenwaarde')
 figure()
-plot(1:65,log10(ResiduQRWilkinson(eigw,:)),':ro','MarkerSize',2)
+plot(1:65,log10(ResiduQRWilkinson(1,:)),'b*','MarkerSize',1)
 title('QR-methode met Wilkinson shift')
 xlabel('Stappen')
 ylabel('Log residu')
 legend('Log residuwaarden van 1 eigenwaarde')
 figure()
-plot(1:83,log10(ResiduQRRayleigh(eigw,:)),':b*','MarkerSize',2)
+plot(1:83,log10(ResiduQRRayleigh(1,:)),'b*','MarkerSize',1)
 title('QR-methode met Rayleigh quotiënt shift')
 xlabel('Stappen')
 ylabel('Log residu')
@@ -64,7 +62,7 @@ figure()
 
 %Een aantal stappen plotten voor alle methodes
 maxstappen=60;
-semilogy(1:maxstappen,ResiduQRRayleigh(eigw,1:maxstappen),'b*',1:maxstappen,ResiduQRWilkinson(eigw,1:maxstappen),'-ro',1:maxstappen,ResiduQRZonder(eigw,1:maxstappen),'g--s')
+semilogy(1:maxstappen,ResiduQRRayleigh(1,1:maxstappen),'b*',1:maxstappen,ResiduQRWilkinson(1,1:maxstappen),'-o',1:maxstappen,ResiduQRZonder(1,1:maxstappen),'g--s')
 %semilogy(1:30,resZonder(:,1:30),'-o', 1:size(resRay,2),resRay,'r:d', 1:size(resWilk,2),resWilk,'g--s');
 title('Convergentie voor 1 eigenwaarde')
 xlabel('Stappen')
@@ -74,7 +72,7 @@ legend('qrRayleighShift', 'qrWilkinsonShift','qrZonder')
 %Maak een tabel met waarden van de verschillende methodes.
 format shortG
 LogTabel=[ResiduQRZonder(1,:);ResiduQRRayleigh(1,:) NaN(1,677-83);ResiduQRWilkinson(1,:) NaN(1,677-65)];
-TabelMetWaarden=LogTabel(:,[1,64:65,82:83, 676:677]);[1,64:65,82:83, 676:677;LogTabel(:,[1,64:65,82:83, 676:677])]
+TabelmetWaarden=LogTabel(:,[1,64:65,82:83, 676:677]);[1,64:65,82:83, 676:677;LogTabel(:,[1,64:65,82:83, 676:677])]
 
 TijdTerInfoInSeconden= toc;
 disp(['De tijd die de berekening nam was: ',num2str(TijdTerInfoInSeconden),' seconden.'])
