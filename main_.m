@@ -120,10 +120,10 @@ disp(['Het uitvoeren van alle code duurde: ', num2str(TijdTerInfoInSeconden),' s
 %% BATS
 clear
 tic
-%f_handle = @(x) (x-1)./(1+6*x.^2);
-f_handle = @(x) log(x+2).*sin(10*x);
+f_handle = @(x) (x-1)./(1+6*x.^2);
+%f_handle = @(x) log(x+2).*sin(10*x);
 %f_handle = @(x) x.^5-x.^4+x.^3-x.^2+x-1;
-max_ord = 100;
+max_ord = 65;
 
 max_fout = zeros(1,max_ord);
 T = cheb(max_ord);
