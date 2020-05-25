@@ -34,7 +34,7 @@ clear
 tic
 %Invoeren parameters.
 aantal_ev = 100;
-LijstBenaderingsOrdes=[2 4 9 11 30];
+LijstBenaderingsOrdes=[3];
 
 %Afhankelijk van welke functie de rest in commentaar zetten.
 %f_handle = @(x) (x-1)./(1+6*x.^2);
@@ -159,8 +159,8 @@ clear
 tic
 
 %Afhankelijk van welke functie de andere 2 in commentaar zetten.
-f_handle = @(x) (x-1)./(1+6*x.^2);
-%f_handle = @(x) log(x+2).*sin(10*x);
+%f_handle = @(x) (x-1)./(1+6*x.^2);
+f_handle = @(x) log(x+2).*sin(10*x);
 %f_handle = @(x) x.^5-x.^4+x.^3-x.^2+x-1;
 
 %Parameters ingeven.
@@ -201,6 +201,15 @@ end
 plot(1:max_orde,Gemiddeldefoutlog,'HandleVisibility','off')
 hold on
 plot(1:max_orde,Gemiddeldefoutlog,'b*')
+%The general convergence:
+%For f1:
+%plot(1:max_orde,log10(1.5.^-(1:max_orde)),'r','HandleVisibility','off')
+%For f2:
+%plot(1:max_orde,log10(+5.^-(1:max_orde))+8.5,'r','HandleVisibility','off')
+%For f3:
+%plot(1:4,log10(2.^-(1:4)),'r','HandleVisibility','off')
+%xlim([1 4])
+
 xlabel('Orde')
 ylabel('log10(gemiddelde fout)')
 legend('gemiddelde fout per orde')
