@@ -71,10 +71,19 @@ xlabel('Stappen')
 ylabel('Log residu')
 legend('qrRayleighShift', 'qrWilkinsonShift','qrZonder')
 
+%Data voor fit
+rangeZonder=20:677;%Eerste 19 weg
+rangeRayleigh=1:81;%Laatste 2 waarden weg
+rangeWilkinson=1:64;%Laatste waarde weg
+
+dataZonder=log10(ResiduQRZonder(eigw,rangeZonder));
+dataRayleigh=log10(ResiduQRRayleigh(eigw,rangeRayleigh));
+dataWilkinson=log10(ResiduQRWilkinson(eigw,rangeWilkinson));
+
 %Maak een tabel met waarden van de verschillende methodes.
 format shortG
 LogTabel=[ResiduQRZonder(1,:);ResiduQRRayleigh(1,:) NaN(1,677-83);ResiduQRWilkinson(1,:) NaN(1,677-65)];
-TabelMetWaarden=LogTabel(:,[1,64:65,82:83, 676:677]);[1,64:65,82:83, 676:677;LogTabel(:,[1,64:65,82:83, 676:677])]
+TabelMetWaarden=[1,64:65,82:83, 676:677;LogTabel(:,[1,64:65,82:83, 676:677])]
 
 TijdTerInfoInSeconden= toc;
 disp(['De tijd die de berekening nam was: ',num2str(TijdTerInfoInSeconden),' seconden.'])
