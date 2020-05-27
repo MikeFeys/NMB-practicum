@@ -5,7 +5,17 @@ tic
 
 %Data inlezen
 VolSymmetrischeMatrix=load('matrix.txt');
-
+%Controleren of de matrisch hermitisch is
+tf = ishermitian(VolSymmetrischeMatrix);
+tfskew = ishermitian(VolSymmetrischeMatrix,'skew');
+if tf
+    disp('De matrix is hermitisch.')
+else if tfskew
+        disp('De matrix is scheef-hermitisch.')
+    else
+        disp('De matrix is niet hermitisch.')
+    end
+end
 %Matrix omvormen tot hessenberg vorm.
 HessenbergVorm=hess(VolSymmetrischeMatrix);
 
@@ -28,60 +38,52 @@ VolSymmetrischeMatrix=load('matrix.txt');
 [EigenwaardeQRWilkinson,ResiduQRWilkinson]=qr_shiftwilkinsonall(VolSymmetrischeMatrix);
 [EigenwaardeQRRayleigh,ResiduQRRayleigh]=qr_shiftall(VolSymmetrischeMatrix);
 
-%Gemiddelde residu van alle rijen opgeteld gemiddeld plotten??
+%Kiezen welke eigenwaarde
+eigw=1;
 
-%QR-methode zonder shift.
+%Convergentie voor 1 eigenwaarde plotten met elke methode apart.
 figure()
-gemiddeldeResiduQRZonder=sum(ResiduQRZonder,1)/length(ResiduQRZonder(:,1));
-plot(1:677,log(gemiddeldeResiduQRZonder),'b*','MarkerSize',1)
+plot(1:677,log10(ResiduQRZonder(eigw,:)),':gs','MarkerSize',2)
 title('QR-methode zonder shift')
 xlabel('Stappen')
 ylabel('Log residu')
-legend('Log residuwaarden')
+legend('Log residuwaarden van 1 eigenwaarde')
 figure()
-plot(1:677,gemiddeldeResiduQRZonder,'b*','MarkerSize',1)
-title('QR-methode zonder shift')
-xlabel('Stappen')
-ylabel('Residu')
-legend('Residuwaarden')
-
-%QR-methode met Wilkinson shift.
-figure()
-gemiddeldeResiduQRWilkinson=sum(ResiduQRWilkinson,1)/length(ResiduQRWilkinson(:,1));
-plot(1:65,log(gemiddeldeResiduQRWilkinson),'b*','MarkerSize',3)
+plot(1:65,log10(ResiduQRWilkinson(eigw,:)),':ro','MarkerSize',2)
 title('QR-methode met Wilkinson shift')
 xlabel('Stappen')
 ylabel('Log residu')
-legend('Log residuwaarden')
+legend('Log residuwaarden van 1 eigenwaarde')
 figure()
-plot(1:65,gemiddeldeResiduQRWilkinson,'b*','MarkerSize',3)
-title('QR-methode met Wilkinson shift')
-xlabel('Stappen')
-ylabel('Residu')
-legend('Residuwaarden')
-
-%QR-methode met Rayleigh quotiënt shift.
-figure()
-gemiddeldeResiduQRRayleigh=sum(ResiduQRRayleigh,1)/length(ResiduQRRayleigh(:,1));
-plot(1:83,log(gemiddeldeResiduQRRayleigh),'b*','MarkerSize',3)
+plot(1:83,log10(ResiduQRRayleigh(eigw,:)),':b*','MarkerSize',2)
 title('QR-methode met Rayleigh quotiënt shift')
 xlabel('Stappen')
 ylabel('Log residu')
-legend('Log residuwaarden')
+legend('Log residuwaarden van 1 eigenwaarde')
 figure()
-plot(1:83,gemiddeldeResiduQRRayleigh,'b*','MarkerSize',3)
-title('QR-methode met Rayleigh quotiënt shift')
+
+%Een aantal stappen plotten voor alle methodes
+maxstappen=60;
+semilogy(1:maxstappen,ResiduQRRayleigh(eigw,1:maxstappen),'b*',1:maxstappen,ResiduQRWilkinson(eigw,1:maxstappen),'-ro',1:maxstappen,ResiduQRZonder(eigw,1:maxstappen),'g--s')
+%semilogy(1:30,resZonder(:,1:30),'-o', 1:size(resRay,2),resRay,'r:d', 1:size(resWilk,2),resWilk,'g--s');
+title('Convergentie voor 1 eigenwaarde')
 xlabel('Stappen')
-ylabel('Residu')
-legend('Residuwaarden')
+ylabel('Log residu')
+legend('qrRayleighShift', 'qrWilkinsonShift','qrZonder')
 
-%Maak een tabel met logwaarden van de verschillende methodes.
-LogTabel=[1:677;log10(gemiddeldeResiduQRZonder);log10(gemiddeldeResiduQRRayleigh) NaN(1,677-83);log10(gemiddeldeResiduQRWilkinson) NaN(1,677-65)]';
+%Data voor fit
+rangeZonder=20:677;%Eerste 19 weg
+rangeRayleigh=1:81;%Laatste 2 waarden weg
+rangeWilkinson=1:64;%Laatste waarde weg
 
-%Change the table to latex format for easy use. Only useful parts are
-%selected from table.
-latex_table = latex(vpa(sym([LogTabel(1:5,:); LogTabel(63:66,:); LogTabel(80:84,:); LogTabel(674:677,:)]),2));
-disp(['Latex formaat van de nuttige delen van de tabel: ',latex_table])
+dataZonder=log10(ResiduQRZonder(eigw,rangeZonder));
+dataRayleigh=log10(ResiduQRRayleigh(eigw,rangeRayleigh));
+dataWilkinson=log10(ResiduQRWilkinson(eigw,rangeWilkinson));
+
+%Maak een tabel met waarden van de verschillende methodes.
+format shortG
+LogTabel=[ResiduQRZonder(1,:);ResiduQRRayleigh(1,:) NaN(1,677-83);ResiduQRWilkinson(1,:) NaN(1,677-65)];
+TabelMetWaarden=[1,64:65,82:83, 676:677;LogTabel(:,[1,64:65,82:83, 676:677])]
 
 TijdTerInfoInSeconden= toc;
 disp(['De tijd die de berekening nam was: ',num2str(TijdTerInfoInSeconden),' seconden.'])

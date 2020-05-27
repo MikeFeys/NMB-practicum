@@ -78,52 +78,13 @@ end
 %Ter info de tijd die de berekening nam.  
 TijdTerInfoInSeconden=toc;
 disp(['Het uitvoeren van alle code duurde: ', num2str(TijdTerInfoInSeconden),' seconden.'])
-%% Convergentiesnelheid LUKAS
+%% Convergentie via maximale fout
 clear
 tic
 f_handle = @(x) (x-1)./(1+6*x.^2);
 %f_handle = @(x) log(x+2).*sin(10*x);
 %f_handle = @(x) x.^5-x.^4+x.^3-x.^2+x-1;
-max_ord = 60;
-
-X = linspace(-1,1,100);
-max_fout = zeros(1,max_ord);
-T = cheb(max_ord);
-figure()
-for n = 1:max_ord
-    
-a = chebcoeff(f_handle,n);
-c = poly(a,T(1:n+1,1:n+1));
-syms x;
-y(x) = 0.*x;
-
-for i=1:n+1
-    y = y + c(i)*(x.^(i-1));
-end
-
-[x_min,fval] = fminsearch(-abs(f_handle-y),0);
-    if x_min>1 || x_min<-1
-        disp("ERROR: Minima is outside boundaries of [-1,1]");
-    end
-max_fout(n) = -fval;
-%hold on
-%fplot(abs(f_handle-y),[-1 1],'DisplayName',['Fout van orde ',num2str(n)])
-end
-%fplot(log(abs(f_handle-y)),[-1 1])
-%legend()
-hold off
-%figure()
-plot(1:n,max_fout)
-%Ter info de tijd die de berekening nam.  
-TijdTerInfoInSeconden=toc;
-disp(['Het uitvoeren van alle code duurde: ', num2str(TijdTerInfoInSeconden),' seconden.'])
-%% BATS
-clear
-tic
-%f_handle = @(x) (x-1)./(1+6*x.^2);
-f_handle = @(x) log(x+2).*sin(10*x);
-%f_handle = @(x) x.^5-x.^4+x.^3-x.^2+x-1;
-max_ord = 100;
+max_ord = 65;
 
 max_fout = zeros(1,max_ord);
 T = cheb(max_ord);
@@ -175,8 +136,8 @@ clear
 tic
 
 %Afhankelijk van welke functie de andere 2 in commentaar zetten.
-f_handle = @(x) (x-1)./(1+6*x.^2);
-%f_handle = @(x) log(x+2).*sin(10*x);
+%f_handle = @(x) (x-1)./(1+6*x.^2);
+f_handle = @(x) log(x+2).*sin(10*x);
 %f_handle = @(x) x.^5-x.^4+x.^3-x.^2+x-1;
 
 %Parameters ingeven.
@@ -217,6 +178,15 @@ end
 plot(1:max_orde,Gemiddeldefoutlog,'HandleVisibility','off')
 hold on
 plot(1:max_orde,Gemiddeldefoutlog,'b*')
+%The general convergence:
+%For f1:
+%plot(1:max_orde,log10(1.5.^-(1:max_orde)),'r','HandleVisibility','off')
+%For f2:
+%plot(1:max_orde,log10(+5.^-(1:max_orde))+8.5,'r','HandleVisibility','off')
+%For f3:
+%plot(1:4,log10(2.^-(1:4)),'r','HandleVisibility','off')
+%xlim([1 4])
+
 xlabel('Orde')
 ylabel('log10(gemiddelde fout)')
 legend('gemiddelde fout per orde')
@@ -465,11 +435,15 @@ surf(X,Y,z,'FaceLighting','gouraud','EdgeColor','none','LineStyle','none')%The '
 colorbar
 xlabel('X')
 ylabel('Y')
-title(['Benaderende 3D plot van Etna tot op graad m=',num2str(m),' en n=',num2str(n)])
+title(['Benaderende 3D plot van Etna tot op graad m=',num2str(m),' en n=',num2str(n)]) 
+
+
 figure()
 imagesc(z)
 colorbar
 title(['Benadering bovenaanzicht Etna tot op graad m=',num2str(m),' en n=',num2str(n)])
+
+
 
 %Ter info de tijd die de berekening nam.  
 TijdTerInfoInSeconden=toc;
