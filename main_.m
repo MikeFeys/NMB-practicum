@@ -3,7 +3,7 @@ clear
 tic
 
 %Invoer parameters.
-n=4;
+n=45;
 aantal_ev = 100;
 
 %Bepalen interpolatiepunten en Chebyshev-veeltermen opvragen.
@@ -22,6 +22,8 @@ end
 
 %Plot aanpassen.
 ylim([-1 2]);
+xlim([-1 1]);
+
 title(['Chebyshev veeltermen tot ',num2str(n) , ' orde'])
 title(legend,'T_k')
 legend(cellstr(num2str([0:n]', 'T_%-d')))
@@ -78,6 +80,22 @@ end
 %Ter info de tijd die de berekening nam.  
 TijdTerInfoInSeconden=toc;
 disp(['Het uitvoeren van alle code duurde: ', num2str(TijdTerInfoInSeconden),' seconden.'])
+%% Illustratie methode om maximale fout te vinden
+hold on
+f_handle = @(x) (x-1)./(1+6*x.^2);
+n = 5;
+a = chebcoeff(f_handle,n);
+T = cheb(n);
+c = poly(a,T(1:n+1,1:n+1));
+y = poly2sym(fliplr(c));
+
+evspace = fliplr(cos(linspace(0,pi,n+1)) );
+plot(evspace,zeros(1,length(evspace)), 'o')
+fplot(abs(f_handle-y),[-1,1]);
+
+ylabel(['abs(', strrep(char(f_handle),'@(x)',''),'-y)'])
+title(['Benaderingsfout van ', strrep(char(f_handle),'@(x)','') ,' bij orde 5'])
+
 %% Convergentie via maximale fout
 clear
 tic
@@ -104,6 +122,7 @@ for i=2:length(evspace)
 end
 max_fout(n) = max(max_intval);
 end
+figure()
 plot(1:n,log10(max_fout),'HandleVisibility','off')
 hold on
 plot(1:max_ord,log10(max_fout),'b*')
@@ -117,10 +136,6 @@ TijdTerInfoInSeconden=toc;
 disp(['Het uitvoeren van alle code duurde: ', num2str(TijdTerInfoInSeconden),' seconden.'])
 %% Convergentie via gemiddelde fout (Mike)
 
-%% da power of fminbnd met evspace in plot
-hold on
-plot(evspace,zeros(1,length(evspace)), 'o')
-fplot(abs(f_handle-y),[-1,1]);
 %%
 n = 25;
 f_handle = @(x) log(x+2)*sin(10*x);
